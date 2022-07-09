@@ -1,0 +1,5 @@
+{
+    "files.watcherExclude": {
+        "\"**/*.js\": {\"when\": \"$(basename).ts\"}": true
+    }
+}
