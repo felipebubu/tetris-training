@@ -88,13 +88,13 @@ const draw = () => {
     }
 
     //render hold
-    if (P1.hold_count != -1){
+    if (P1.held_piece != null){
         for (let i = 0; i < P1.held_piece.state.length; i++){
             for (let j = 0; j < P1.held_piece.state[0].length; j++){
                 if (P1.held_piece.state[i][j] > 0){
                     colors(P1.held_piece.state[i][j]);
-                    ctx.fillRect((500 + P1.x * (piece_size+1)-(piece_size+1)) + j * (piece_size+1)+(piece_size+1), (piece_size + (P1.y) * (piece_size + 1) + i * (piece_size+1))-piece_size, piece_size, piece_size);
-                    ctx.strokeRect((500 + P1.x * (piece_size+1)-(piece_size+1)) + j * (piece_size+1)+(piece_size+1), (piece_size + (P1.y) * (piece_size + 1) + i * (piece_size+1))-piece_size, piece_size, piece_size);
+                    ctx.fillRect(500 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
+                    ctx.strokeRect(500 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
                 }
             }
         }

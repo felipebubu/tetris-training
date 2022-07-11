@@ -15,23 +15,26 @@ class player {
         this.x = 4;
         this.y = 1;
         this.curr_piece = new piece(piece_from_bag.states);
-        this.hold_count = 0;
+        if (this.hold_count == 1){
+            this.hold_count = 0;
+        }
     }
 
     new_hold (piece_from_bag: piece){
         this.x = 4;
         this.y = 1;
         this.held_piece = new piece(piece_from_bag.states);
-        this.hold_count = 1;
+        this.hold_count = 0;
     }
 
     hold_bag (game_bag: bag, curr_piece: piece){
         if (this.hold_count == -1){
             this.new_piece(game_bag.take_piece());
             this.new_hold(curr_piece)
+            this.hold_count = 1;
         }
         if (this.hold_count == 0){
-            let buffer = this.held_piece;
+            let buffer = this.curr_piece;
             this.new_piece(this.held_piece);
             this.new_hold(buffer)
         }
