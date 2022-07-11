@@ -8,6 +8,7 @@ const game_bag = new bag(pieces);
 const P1 = new player(game_bag.take_piece());
 let input_grid = new grid(structuredClone(main_grid.array));
 let ghost_grid = new grid(structuredClone(main_grid.array));
+let drop_grid = new grid(structuredClone(main_grid.array))
 let offsets = get_wall_offset();
 
 let old_time = Date.now();
@@ -39,10 +40,12 @@ document.addEventListener('keydown', function(event) {
         case 'ArrowDown':
             event.preventDefault();
             drop_constraint = 0.1;
+            old_time_input = Date.now();
             break;
         case ' ':
             event.preventDefault();
             main_grid.hard_drop(P1.curr_piece, P1.x, 22, P1.y);
+            drop_grid.array = structuredClone(main_grid.array);
             input_grid.array = structuredClone(main_grid.array);
             P1.new_piece(game_bag.take_piece());
             offsets = get_wall_offset();
@@ -58,8 +61,8 @@ document.addEventListener('keydown', function(event) {
             offsets = get_wall_offset();
             old_time_input = Date.now();
             break;
-        case 'C':
-            //hold
+        case 'c':
+            P1.hold_bag(game_bag, P1.curr_piece);
     }
 });
 
@@ -74,7 +77,9 @@ document.body.addEventListener('keyup', (event) => {
 function loop() {
     input_grid.array = structuredClone(main_grid.array);
     ghost_grid.array = structuredClone(main_grid.array);
+    
     ghost_grid.hard_drop(P1.curr_piece, P1.x, 22, P1.y);
+
     curr_time = (Date.now() - old_time)/1000;
     curr_time_input = (Date.now() - old_time_input)/1000;
     if (curr_time > drop_constraint){
@@ -84,7 +89,8 @@ function loop() {
             return false;
         }
         console.log(1)
-        if(main_grid.drop(P1.curr_piece, P1.x, P1.y)){
+        if(drop_grid.drop(P1.curr_piece, P1.x, P1.y)){
+            main_grid.hard_drop(P1.curr_piece, P1.x, 25, P1.y)
             P1.new_piece(game_bag.take_piece());
             draw();
             window.requestAnimationFrame(loop);

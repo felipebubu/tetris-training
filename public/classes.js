@@ -3,14 +3,34 @@ class player {
     constructor(first_piece) {
         this.x = 0;
         this.y = 0;
+        this.hold_count = -1;
         this.x = 4;
         this.y = 1;
         this.curr_piece = new piece(first_piece.states);
+        this.held_piece = null;
     }
     new_piece(piece_from_bag) {
         this.x = 4;
         this.y = 1;
         this.curr_piece = new piece(piece_from_bag.states);
+        this.hold_count = 0;
+    }
+    new_hold(piece_from_bag) {
+        this.x = 4;
+        this.y = 1;
+        this.held_piece = new piece(piece_from_bag.states);
+        this.hold_count = 1;
+    }
+    hold_bag(game_bag, curr_piece) {
+        if (this.hold_count == -1) {
+            this.new_piece(game_bag.take_piece());
+            this.new_hold(curr_piece);
+        }
+        if (this.hold_count == 0) {
+            let buffer = this.held_piece;
+            this.new_piece(this.held_piece);
+            this.new_hold(buffer);
+        }
     }
 }
 class grid {
@@ -23,12 +43,12 @@ class grid {
             let colunm = x;
             for (let p_row = piece.state.length - 1; p_row > -1; p_row--) {
                 for (let p_colunm = 0; p_colunm < piece.width; p_colunm++) {
-                    if (this.array[row + 1][colunm + p_colunm] > 0 && piece.state[p_row][p_colunm] > 0) {
+                    if (this.array[row + 1 + p_row][colunm + p_colunm] > 0 && piece.state[p_row][p_colunm] > 0) {
                         //collision happened
                         for (let a_row = 0; a_row < piece.state.length; a_row++) {
                             for (let a_colunm = 0; a_colunm < piece.width; a_colunm++) {
                                 if (piece.state[a_row][a_colunm] > 0) {
-                                    this.array[row + a_row - p_row][colunm + a_colunm] = piece.state[a_row][a_colunm];
+                                    this.array[row + a_row][colunm + a_colunm] = piece.state[a_row][a_colunm];
                                 }
                             }
                         }
@@ -133,6 +153,9 @@ const main_grid = new grid([
     [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
     [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
     [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
     [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
 ]);
 const I_states = [
