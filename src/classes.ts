@@ -24,7 +24,7 @@ class player {
         this.x = 4;
         this.y = 1;
         this.held_piece = new piece(piece_from_bag.states);
-        this.hold_count = 0;
+        this.hold_count = 1;
     }
 
     hold_bag (game_bag: bag, curr_piece: piece){
@@ -77,6 +77,31 @@ class grid {
             return true;
         }
         return false;
+    }
+
+    line_clear(){
+        let cleared_rows = [];
+        for (let row = 1; row < 21; row++){
+            let cleared_row = 1;
+            for (let colunm = 0; colunm < this.array[0].length; colunm++){
+                if (this.array[row][colunm] == 0){
+                    cleared_row = 0;
+                    break;
+                }
+            }
+            if (cleared_row){
+                cleared_rows.push(row);
+            }
+            if (cleared_rows.length == 4){
+                break;
+            }
+        }
+        console.log(cleared_rows);
+        for (let i = cleared_rows.length; i > -1; i--){
+            console.log(cleared_rows[i], i);
+            this.array[cleared_rows[i]] = this.array[cleared_rows[i] - i];
+        }
+        return cleared_rows.length;
     }
 
 }

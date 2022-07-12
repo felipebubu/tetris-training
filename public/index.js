@@ -46,6 +46,7 @@ document.addEventListener('keydown', function (event) {
             P1.new_piece(game_bag.take_piece());
             offsets = get_wall_offset();
             old_time_input = Date.now();
+            main_grid.line_clear();
             break;
         case 'z':
             P1.curr_piece.spin_piece(-1);
