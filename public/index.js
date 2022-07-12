@@ -41,12 +41,12 @@ document.addEventListener('keydown', function (event) {
         case ' ':
             event.preventDefault();
             main_grid.hard_drop(P1.curr_piece, P1.x, 22, P1.y);
+            main_grid.line_clear();
             drop_grid.array = structuredClone(main_grid.array);
             input_grid.array = structuredClone(main_grid.array);
             P1.new_piece(game_bag.take_piece());
             offsets = get_wall_offset();
             old_time_input = Date.now();
-            main_grid.line_clear();
             break;
         case 'z':
             P1.curr_piece.spin_piece(-1);
@@ -82,7 +82,6 @@ function loop() {
             window.requestAnimationFrame(loop);
             return false;
         }
-        console.log(1);
         if (drop_grid.drop(P1.curr_piece, P1.x, P1.y)) {
             main_grid.hard_drop(P1.curr_piece, P1.x, 25, P1.y);
             P1.new_piece(game_bag.take_piece());

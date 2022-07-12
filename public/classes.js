@@ -6,13 +6,13 @@ class player {
         this.hold_count = -1;
         this.x = 4;
         this.y = 1;
-        this.curr_piece = new piece(first_piece.states);
+        this.curr_piece = new piece(first_piece.states, first_piece.srs);
         this.held_piece = null;
     }
     new_piece(piece_from_bag) {
         this.x = 4;
         this.y = 1;
-        this.curr_piece = new piece(piece_from_bag.states);
+        this.curr_piece = new piece(piece_from_bag.states, piece_from_bag.srs);
         if (this.hold_count == 1) {
             this.hold_count = 0;
         }
@@ -20,7 +20,7 @@ class player {
     new_hold(piece_from_bag) {
         this.x = 4;
         this.y = 1;
-        this.held_piece = new piece(piece_from_bag.states);
+        this.held_piece = new piece(piece_from_bag.states, piece_from_bag.srs);
         this.hold_count = 1;
     }
     hold_bag(game_bag, curr_piece) {
@@ -85,21 +85,23 @@ class grid {
                 break;
             }
         }
-        console.log(cleared_rows);
-        for (let i = cleared_rows.length; i > -1; i--) {
-            console.log(cleared_rows[i], i);
-            this.array[cleared_rows[i]] = this.array[cleared_rows[i] - i];
+        for (let i = cleared_rows[cleared_rows.length - 1]; i > 1; i--) {
+            this.array[i] = this.array[i - cleared_rows.length];
+        }
+        for (let i = 0; i < cleared_rows.length; i++) {
+            this.array[i + 1] = [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9];
         }
         return cleared_rows.length;
     }
 }
 class piece {
-    constructor(states) {
+    constructor(states, srs) {
         this.array = 0;
         this.width = 0;
         this.states = states;
         this.state = this.states[this.array];
         this.width = this.state.length;
+        this.srs = srs;
     }
     spin_piece(direction) {
         if (direction == -1) {
@@ -347,10 +349,80 @@ const Z_states = [
         [7, 0, 0],
     ]
 ];
-const I_bag = new piece(I_states);
-const J_bag = new piece(J_states);
-const L_bag = new piece(L_states);
-const O_bag = new piece(O_states);
-const S_bag = new piece(S_states);
-const T_bag = new piece(T_states);
-const Z_bag = new piece(Z_states);
+const I_srs = [
+    [[[-2, 0], [1, 0], [-2, -1], [1, -2]],
+        [[-1, 0], [2, 0], [-1, 2], [2, -1]],
+        [[2, 0], [-1, 0], [2, 1], [-1, -2]],
+        [[1, 0], [-2, 0], [1, -2], [-2, 1]]],
+    [[[-1, 0], [2, 0], [-1, -2], [2, -1]],
+        [[-2, 0], [1, 0], [-2, -1], [1, 2]],
+        [[1, 0], [-2, 0], [1, -2], [-2, 1]],
+        [[2, 0], [-1, 0], [2, 1], [-1, -2]]]
+];
+const J_srs = [
+    [[[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]],
+        [[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]]],
+    [[[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]],
+        [[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]]]
+];
+const L_srs = [
+    [[[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]],
+        [[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]]],
+    [[[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]],
+        [[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]]]
+];
+const O_srs = [
+    [[[0, 0], [0, 0], [0, 0], [0, 0]],
+        [[0, 0], [0, 0], [0, 0], [0, 0]],
+        [[0, 0], [0, 0], [0, 0], [0, 0]],
+        [[0, 0], [0, 0], [0, 0], [0, 0]]],
+    [[[0, 0], [0, 0], [0, 0], [0, 0]],
+        [[0, 0], [0, 0], [0, 0], [0, 0]],
+        [[0, 0], [0, 0], [0, 0], [0, 0]],
+        [[0, 0], [0, 0], [0, 0], [0, 0]]]
+];
+const S_srs = [
+    [[[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]],
+        [[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]]],
+    [[[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]],
+        [[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]]]
+];
+const T_srs = [
+    [[[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]],
+        [[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]]],
+    [[[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]],
+        [[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]]]
+];
+const Z_srs = [
+    [[[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]],
+        [[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]]],
+    [[[1, 0], [1, 1], [0, -2], [1, -2]],
+        [[-1, 0], [-1, -1], [0, 2], [-1, 2]],
+        [[-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        [[1, 0], [1, -1], [0, 2], [1, 2]]]
+];
+const I_bag = new piece(I_states, I_srs);
+const J_bag = new piece(J_states, J_srs);
+const L_bag = new piece(L_states, L_srs);
+const O_bag = new piece(O_states, O_srs);
+const S_bag = new piece(S_states, S_srs);
+const T_bag = new piece(T_states, T_srs);
+const Z_bag = new piece(Z_states, Z_srs);
