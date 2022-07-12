@@ -64,6 +64,7 @@ document.addEventListener('keydown', function(event) {
             break;
         case 'c':
             P1.hold_bag(game_bag, P1.curr_piece);
+            offsets = get_wall_offset();
     }
 });
 
