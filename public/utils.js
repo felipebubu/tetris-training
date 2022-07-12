@@ -61,7 +61,7 @@ const draw = () => {
     ctx.clearRect(0, 0, surface.width, surface.height);
     //render grid
     for (let i = 0; i < 22; i++) {
-        for (let j = 0; j < 12; j++) {
+        for (let j = 3; j < 15; j++) {
             if (main_grid.array[i][j] > 0) {
                 colors(main_grid.array[i][j]);
                 ctx.fillRect(j * (piece_size + 1), i * (piece_size + 1), piece_size, piece_size);

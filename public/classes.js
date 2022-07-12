@@ -4,13 +4,13 @@ class player {
         this.x = 0;
         this.y = 0;
         this.hold_count = -1;
-        this.x = 4;
+        this.x = 7;
         this.y = 1;
         this.curr_piece = new piece(first_piece.states, first_piece.srs);
         this.held_piece = null;
     }
     new_piece(piece_from_bag) {
-        this.x = 4;
+        this.x = 7;
         this.y = 1;
         this.curr_piece = new piece(piece_from_bag.states, piece_from_bag.srs);
         if (this.hold_count == 1) {
@@ -18,7 +18,7 @@ class player {
         }
     }
     new_hold(piece_from_bag) {
-        this.x = 4;
+        this.x = 7;
         this.y = 1;
         this.held_piece = new piece(piece_from_bag.states, piece_from_bag.srs);
         this.hold_count = 1;
@@ -103,27 +103,54 @@ class piece {
         this.width = this.state.length;
         this.srs = srs;
     }
-    spin_piece(direction) {
+    srs_check(player, grid, direction) {
+        for (let y = player.y; y < this.state.length + player.y; y++) {
+            for (let x = player.x; x < this.state[0].length + player.x; x++) {
+                console.log(x, this.state[0].length + player.x, this.state[y - player.y][x - player.x]);
+                if (grid.array[y][x] > 0 && this.state[y - player.y][x - player.x] > 0) {
+                    console.log(1);
+                    /*                     let x_buffer = player.x;
+                                        let y_buffer = player.y; */
+                    for (let i = 0; i < 4; i++) {
+                        /* player.x += this.srs[direction][this.array][i][0];
+                        player.y += this.srs[direction][this.array][i][1]; */
+                        console.log(1);
+                        //this.srs_check(player, grid, direction);
+                    }
+                }
+                return true;
+            }
+        }
+    }
+    spin_piece(direction, grid, player) {
         if (direction == -1) {
             if (this.array > 0) {
                 this.array += direction;
                 this.state = this.states[this.array];
+                direction = 1;
+                this.srs_check(player, grid, direction);
                 this.width = this.state.length;
                 return 1;
             }
             this.array = 3;
             this.state = this.states[this.array];
+            direction = 1;
+            this.srs_check(player, grid, direction);
             this.width = this.state.length;
             return 1;
         }
         if (this.array < 3) {
             this.array += direction;
             this.state = this.states[this.array];
+            direction = 0;
+            this.srs_check(player, grid, direction);
             this.width = this.state.length;
             return 1;
         }
         this.array = 0;
         this.state = this.states[this.array];
+        direction = 0;
+        this.srs_check(player, grid, direction);
         this.width = this.state.length;
         return 1;
     }
@@ -161,31 +188,31 @@ class bag {
     }
 }
 const main_grid = new grid([
-    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
 ]);
 const I_states = [
     [

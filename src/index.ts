@@ -23,7 +23,7 @@ document.addEventListener('keydown', function(event) {
     switch(event.key){
         case 'ArrowLeft':
             event.preventDefault();
-            if (1 < P1.x + offsets[0])
+            if (4 < P1.x + offsets[0])
             {
                 P1.x -= 1;
             }
@@ -31,7 +31,7 @@ document.addEventListener('keydown', function(event) {
             break;
         case 'ArrowRight':
             event.preventDefault();
-            if (P1.x + offsets[1] < 10)
+            if (P1.x + offsets[1] < 13)
             {
                 P1.x += 1;
             }
@@ -53,12 +53,12 @@ document.addEventListener('keydown', function(event) {
             old_time_input = Date.now();
             break;
         case 'z':
-            P1.curr_piece.spin_piece(-1);
+            P1.curr_piece.spin_piece(-1, main_grid, P1);
             offsets = get_wall_offset();
             old_time_input = Date.now();
             break;
         case 'x':
-            P1.curr_piece.spin_piece(1);
+            P1.curr_piece.spin_piece(1, main_grid, P1);
             offsets = get_wall_offset();
             old_time_input = Date.now();
             break;
