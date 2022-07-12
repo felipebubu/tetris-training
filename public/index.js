@@ -21,14 +21,14 @@ document.addEventListener('keydown', function (event) {
     switch (event.key) {
         case 'ArrowLeft':
             event.preventDefault();
-            if (4 < P1.x + offsets[0]) {
+            if (7 < P1.x + offsets[0]) {
                 P1.x -= 1;
             }
             old_time_input = Date.now();
             break;
         case 'ArrowRight':
             event.preventDefault();
-            if (P1.x + offsets[1] < 13) {
+            if (P1.x + offsets[1] < 16) {
                 P1.x += 1;
             }
             old_time_input = Date.now();

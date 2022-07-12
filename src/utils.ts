@@ -62,7 +62,7 @@ const draw = () => {
     ctx.clearRect(0, 0, surface.width, surface.height);
     //render grid
     for (let i = 0; i < 22; i++){
-        for (let j = 3; j < 15; j++){
+        for (let j = 6; j < 18; j++){
             if (main_grid.array[i][j] > 0){
                 colors(main_grid.array[i][j]);
                 ctx.fillRect(j * (piece_size+1), i * (piece_size+1), piece_size, piece_size);
@@ -93,8 +93,8 @@ const draw = () => {
             for (let j = 0; j < P1.held_piece.state[0].length; j++){
                 if (P1.held_piece.state[i][j] > 0){
                     colors(P1.held_piece.state[i][j]);
-                    ctx.fillRect(500 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
-                    ctx.strokeRect(500 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
+                    ctx.fillRect(20 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
+                    ctx.strokeRect(20  + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
                 }
             }
         }
@@ -106,12 +106,12 @@ const draw = () => {
             for (let j = 0; j < game_bag.pieces[p].state[0].length; j++){
                 if (game_bag.pieces[p].state[i][j] > 0){
                     colors(game_bag.pieces[p].state[i][j]);
-                    ctx.fillRect(360 + j * (piece_size+1), p * 90 + i * (piece_size+1)+(piece_size+1), piece_size, piece_size);
-                    ctx.strokeRect(360 + j * (piece_size+1), p * 90 + i * (piece_size+1)+(piece_size+1), piece_size, piece_size);
+                    ctx.fillRect(560 + j * (piece_size+1), p * 90 + i * (piece_size+1)+(piece_size+1), piece_size, piece_size);
+                    ctx.strokeRect(560 + j * (piece_size+1), p * 90 + i * (piece_size+1)+(piece_size+1), piece_size, piece_size);
                 }
             }
         }
     }
     ctx.font = "30px Arial";
-    ctx.fillText(((input_grid.drop(P1.curr_piece, P1.x, P1.y)) && (curr_time_input < 1)) +"\n " + curr_time_input, 50, 50); 
+    ctx.fillText(" " + P1.x + " " + P1.y,  50, 50); 
 }
