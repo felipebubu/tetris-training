@@ -10,7 +10,6 @@ const P1 = new player(game_bag.take_piece());
 let input_grid = new grid(structuredClone(main_grid.array));
 let ghost_grid = new grid(structuredClone(main_grid.array));
 let drop_grid = new grid(structuredClone(main_grid.array));
-let offsets = get_wall_offset();
 let old_time = Date.now();
 let curr_time = Date.now();
 let old_time_input = Date.now();
@@ -21,14 +20,14 @@ document.addEventListener('keydown', function (event) {
     switch (event.key) {
         case 'ArrowLeft':
             event.preventDefault();
-            if (7 < P1.x + offsets[0]) {
+            if (P1.curr_piece.mov_check(P1, main_grid, 1)) {
                 P1.x -= 1;
             }
             old_time_input = Date.now();
             break;
         case 'ArrowRight':
             event.preventDefault();
-            if (P1.x + offsets[1] < 16) {
+            if (P1.curr_piece.mov_check(P1, main_grid, 0)) {
                 P1.x += 1;
             }
             old_time_input = Date.now();
@@ -40,27 +39,25 @@ document.addEventListener('keydown', function (event) {
             break;
         case ' ':
             event.preventDefault();
+            console.log(P1.curr_piece.tspin_check(P1, main_grid));
             main_grid.hard_drop(P1.curr_piece, P1.x, 22, P1.y);
-            main_grid.line_clear();
+            main_grid.line_clear(true);
             drop_grid.array = structuredClone(main_grid.array);
             input_grid.array = structuredClone(main_grid.array);
             P1.new_piece(game_bag.take_piece());
-            offsets = get_wall_offset();
             old_time_input = Date.now();
             break;
-        case 'z':
+        case 'z' || 'Z':
             P1.curr_piece.spin_piece(-1, main_grid, P1);
-            offsets = get_wall_offset();
             old_time_input = Date.now();
             break;
-        case 'x':
+        case 'x' || 'X':
             P1.curr_piece.spin_piece(1, main_grid, P1);
-            offsets = get_wall_offset();
             old_time_input = Date.now();
             break;
-        case 'c':
+        case 'c' || 'C':
             P1.hold_bag(game_bag, P1.curr_piece);
-            offsets = get_wall_offset();
+            break;
     }
 });
 document.body.addEventListener('keyup', (event) => {
@@ -77,6 +74,9 @@ function loop() {
     ghost_grid.hard_drop(P1.curr_piece, P1.x, 22, P1.y);
     curr_time = (Date.now() - old_time) / 1000;
     curr_time_input = (Date.now() - old_time_input) / 1000;
+    if (drop_constraint == 0.1) {
+        old_time_input = Date.now();
+    }
     if (curr_time > drop_constraint) {
         if ((input_grid.drop(P1.curr_piece, P1.x, P1.y)) && (curr_time_input < 1)) {
             draw();
@@ -88,7 +88,6 @@ function loop() {
             P1.new_piece(game_bag.take_piece());
             draw();
             window.requestAnimationFrame(loop);
-            offsets = get_wall_offset();
             old_time = Date.now();
             return;
         }

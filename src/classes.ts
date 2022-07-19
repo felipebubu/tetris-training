@@ -44,6 +44,7 @@ class player {
 
 class grid {
     array : number[][];
+    tspin = 0;
     constructor (array: number[][]){
         this.array = array;
     }
@@ -79,7 +80,7 @@ class grid {
         return false;
     }
 
-    line_clear(){
+    line_clear(tspin : boolean){
         let cleared_rows = [];
         for (let row = 1; row < 21; row++){
             let cleared_row = 1;
@@ -103,7 +104,10 @@ class grid {
         for (let i = 0; i < cleared_rows.length; i++){
             this.array[i+1] = [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9];
         }
-        return cleared_rows.length;
+        if (tspin){
+            return cleared_rows.length * 2;
+        }
+        return cleared_rows.length
     }
 
 }
@@ -121,6 +125,62 @@ class piece {
         this.srs = srs;
     }
 
+    tspin_check(player : player, grid : grid){
+        if (player.curr_piece.states == T_bag.states){
+            let buffer = player.curr_piece.array;
+            let buffer_y = player.y;
+            let buffer_x = player.x;
+            for (let i = 0; i < 4; i++){
+                player.curr_piece.spin_piece(1, grid, player);
+                for (let i = 0; i < 3; i++){
+                    if (this.mov_check(player, grid, i)){
+                        player.curr_piece.state = player.curr_piece.states[buffer];
+                        player.y = buffer_y;
+                        player.x = buffer_x;
+                        return false;
+                    }
+                }
+            }
+            
+            return true;
+        }
+        return false;
+    }
+
+    mov_check(player : player, grid : grid, direction : number){
+        if (direction == 0){
+            for (let y = player.y; y < this.state.length+player.y; y++){
+                for (let x = player.x; x < this.state[0].length+player.x; x++){
+                    if (grid.array[y][x+1] > 0 && this.state[y-player.y][x-player.x] > 0){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        else if (direction == 1){
+            for (let y = player.y; y < this.state.length+player.y; y++){
+                for (let x = player.x; x < this.state[0].length+player.x; x++){
+                    if (grid.array[y][x-1] > 0 && this.state[y-player.y][x-player.x] > 0){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        else {
+            for (let y = player.y; y < this.state.length+player.y; y++){
+                for (let x = player.x; x < this.state[0].length+player.x; x++){
+                    if (grid.array[y+1][x] > 0 && this.state[y-player.y][x-player.x] > 0){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     srs_check(player : player, grid : grid, direction : number){
         for (let y = player.y; y < this.state.length+player.y; y++){
@@ -135,7 +195,6 @@ class piece {
 
 
     spin_collision(player : player, grid : grid, direction : number, array_index : number){
-        console.log(array_index, this.array);
         let x_buffer = player.x;
         let y_buffer = player.y;
         if (this.srs_check(player, grid, direction)){
@@ -148,23 +207,25 @@ class piece {
             player.x += this.srs[direction][array_index][i][0];
             player.y += -1 * this.srs[direction][array_index][i][1];
             if (this.srs_check(player, grid, direction)){
-                console.log(this.srs[direction][array_index][i][0], this.srs[direction][array_index][i][1])
                 return true;
             }
         }
-        console.log(this.srs[direction][array_index][3][0], this.srs[direction][array_index][3][1], direction, array_index)
         return false;
     }
 
     spin_piece(direction: number, grid : grid, player : player){
         let old_array = this.array;
+        let old_x = player.x;
+        let old_y = player.y;
         if (direction == -1){
             if (this.array > 0){
                 this.array += direction;
                 this.state = this.states[this.array];
 
                 direction = 1;
-                this.spin_collision(player, grid, direction, old_array);
+                if (!this.spin_collision(player, grid, direction, old_array)){
+                    this.state = this.states[old_array];
+                }
 
 
                 this.width = this.state.length;
@@ -174,7 +235,9 @@ class piece {
             this.state = this.states[this.array]
 
             direction = 1;
-            this.spin_collision(player, grid, direction, old_array);
+            if (!this.spin_collision(player, grid, direction, old_array)){
+                this.state = this.states[old_array];
+            }
 
             this.width = this.state.length;
             return 1;
@@ -185,7 +248,9 @@ class piece {
             this.state = this.states[this.array]
 
             direction = 0;
-            this.spin_collision(player, grid, direction, old_array);
+            if (!this.spin_collision(player, grid, direction, old_array)){
+                this.state = this.states[old_array];
+            }
 
             this.width = this.state.length;
             return 1;
@@ -194,7 +259,9 @@ class piece {
         this.state = this.states[this.array];
 
         direction = 0;
-        this.spin_collision(player, grid, direction, old_array);
+        if (!this.spin_collision(player, grid, direction, old_array)){
+            this.state = this.states[old_array];
+        }
         
 
         this.width = this.state.length;
