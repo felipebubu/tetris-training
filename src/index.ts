@@ -2,10 +2,11 @@ const canvas = <HTMLCanvasElement> document.getElementById('tetris');
 const ctx = canvas.getContext('2d')!;
 ctx.strokeStyle = ('black');
 const surface = <HTMLCanvasElement> document.getElementById('tetris')!;
+
 //generates bag and player
-const pieces = [I_bag, J_bag, L_bag, O_bag, S_bag, T_bag, Z_bag];
-const game_bag = new bag(pieces);
-const P1 = new player(game_bag.take_piece());
+let pieces = [I_bag, J_bag, L_bag, O_bag, S_bag, T_bag, Z_bag];
+let game_bag = new bag(pieces);
+let P1 = new player(game_bag.take_piece());
 let input_grid = new grid(structuredClone(main_grid.array));
 let ghost_grid = new grid(structuredClone(main_grid.array));
 let drop_grid = new grid(structuredClone(main_grid.array))
@@ -18,7 +19,6 @@ let old_time_input = Date.now();
 let curr_time_input = Date.now();
 
 let drop_constraint = 1;
-
 
 //input handling
 document.addEventListener('keydown', function(event) {
@@ -44,9 +44,12 @@ document.addEventListener('keydown', function(event) {
             break;
         case ' ':
             event.preventDefault();
-            let tspin_bool = P1.curr_piece.tspin_check(P1, main_grid)
-            main_grid.hard_drop(P1.curr_piece, P1.x, 22, P1.y);
+
+            let tspin_bool = P1.curr_piece.tspin_check(P1, main_grid);
+            main_grid.hard_drop(P1.curr_piece, P1.x, 28, P1.y);
             main_grid.line_clear(tspin_bool);
+            main_grid.game_over();
+
             drop_grid.array = structuredClone(main_grid.array);
             input_grid.array = structuredClone(main_grid.array);
             P1.new_piece(game_bag.take_piece());
@@ -78,7 +81,7 @@ function loop() {
     input_grid.array = structuredClone(main_grid.array);
     ghost_grid.array = structuredClone(main_grid.array);
     
-    ghost_grid.hard_drop(P1.curr_piece, P1.x, 22, P1.y);
+    ghost_grid.hard_drop(P1.curr_piece, P1.x, 28, P1.y);
 
     curr_time = (Date.now() - old_time)/1000;
     curr_time_input = (Date.now() - old_time_input)/1000;
@@ -93,7 +96,12 @@ function loop() {
             return false;
         }
         if(drop_grid.drop(P1.curr_piece, P1.x, P1.y)){
-            main_grid.hard_drop(P1.curr_piece, P1.x, 25, P1.y)
+
+            let tspin_bool = P1.curr_piece.tspin_check(P1, main_grid);
+            main_grid.hard_drop(P1.curr_piece, P1.x, 28, P1.y);
+            main_grid.line_clear(tspin_bool);
+            main_grid.game_over();
+
             P1.new_piece(game_bag.take_piece());
             draw();
             window.requestAnimationFrame(loop);

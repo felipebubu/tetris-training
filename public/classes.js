@@ -5,13 +5,13 @@ class player {
         this.y = 0;
         this.hold_count = -1;
         this.x = 10;
-        this.y = 1;
+        this.y = 6;
         this.curr_piece = new piece(first_piece.states, first_piece.srs);
         this.held_piece = null;
     }
     new_piece(piece_from_bag) {
         this.x = 10;
-        this.y = 1;
+        this.y = 6;
         this.curr_piece = new piece(piece_from_bag.states, piece_from_bag.srs);
         if (this.hold_count == 1) {
             this.hold_count = 0;
@@ -19,7 +19,7 @@ class player {
     }
     new_hold(piece_from_bag) {
         this.x = 10;
-        this.y = 1;
+        this.y = 6;
         this.held_piece = new piece(piece_from_bag.states, piece_from_bag.srs);
         this.hold_count = 1;
     }
@@ -38,8 +38,16 @@ class player {
 }
 class grid {
     constructor(array) {
-        this.tspin = 0;
         this.array = array;
+    }
+    game_over() {
+        for (let i = 7; i < 17; i++) {
+            if (this.array[6][i] > 0) {
+                game_restart();
+                return true;
+            }
+        }
+        return false;
     }
     hard_drop(piece, x, y, py) {
         //loop through every row and    every colunm of the grid until it meets a piece
@@ -70,29 +78,35 @@ class grid {
         return false;
     }
     line_clear(tspin) {
-        let cleared_rows = [];
-        for (let row = 1; row < 21; row++) {
-            let cleared_row = 1;
+        let cleared_rows = 0;
+        for (let row = 7; row < 28; row++) {
+            let row_clear = true;
             for (let colunm = 0; colunm < this.array[0].length; colunm++) {
                 if (this.array[row][colunm] == 0) {
-                    cleared_row = 0;
-                    break;
+                    row_clear = false;
+                    colunm = this.array[0].length;
                 }
             }
-            if (cleared_row) {
-                cleared_rows.push(row);
+            let buffer = row;
+            if (row_clear) {
+                cleared_rows++;
+                while (buffer > 6) {
+                    this.array[buffer] = structuredClone(this.array[buffer - 1]);
+                    buffer -= 1;
+                }
             }
-            if (cleared_rows.length == 4) {
-                break;
-            }
         }
-        for (let i = cleared_rows[cleared_rows.length - 1]; i > 1; i--) {
-            this.array[i] = this.array[i - cleared_rows.length];
+        let tspin_gargage = {
+            1: 2,
+            2: 4,
+            3: 6
+        };
+        let tspin_garbage = [0, 2, 4, 6];
+        let garbage = [0, 0, 1, 2, 4];
+        if (tspin) {
+            return tspin_garbage[cleared_rows];
         }
-        for (let i = 0; i < cleared_rows.length; i++) {
-            this.array[i + 1] = [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9];
-        }
-        return cleared_rows.length;
+        return garbage[cleared_rows];
     }
 }
 class piece {
@@ -259,8 +273,15 @@ class bag {
         return buffer;
     }
 }
-const main_grid = new grid([
+let main_grid = new grid([
     [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
     [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
     [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
     [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],

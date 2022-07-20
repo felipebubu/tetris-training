@@ -60,17 +60,17 @@ const colors = (piece_color) => {
 const draw = () => {
     ctx.clearRect(0, 0, surface.width, surface.height);
     //render grid
-    for (let i = 0; i < 22; i++) {
+    for (let i = 6; i < 29; i++) {
         for (let j = 6; j < 18; j++) {
             if (main_grid.array[i][j] > 0) {
                 colors(main_grid.array[i][j]);
-                ctx.fillRect(j * (piece_size + 1), i * (piece_size + 1), piece_size, piece_size);
-                ctx.strokeRect(j * (piece_size + 1), i * (piece_size + 1), piece_size, piece_size);
+                ctx.fillRect((j - 5) * (piece_size + 1), (i - 5) * (piece_size + 1), piece_size, piece_size);
+                ctx.strokeRect((j - 5) * (piece_size + 1), (i - 5) * (piece_size + 1), piece_size, piece_size);
             }
             if (ghost_grid.array[i][j] > 0) {
                 colors(ghost_grid.array[i][j]);
-                ctx.fillRect(j * (piece_size + 1), i * (piece_size + 1), piece_size, piece_size);
-                ctx.strokeRect(j * (piece_size + 1), i * (piece_size + 1), piece_size, piece_size);
+                ctx.fillRect((j - 5) * (piece_size + 1), (i - 5) * (piece_size + 1), piece_size, piece_size);
+                ctx.strokeRect((j - 5) * (piece_size + 1), (i - 5) * (piece_size + 1), piece_size, piece_size);
             }
         }
     }
@@ -79,8 +79,8 @@ const draw = () => {
         for (let j = 0; j < P1.curr_piece.state[0].length; j++) {
             if (P1.curr_piece.state[i][j] > 0) {
                 colors(P1.curr_piece.state[i][j]);
-                ctx.fillRect((P1.x * (piece_size + 1) - (piece_size + 1)) + j * (piece_size + 1) + (piece_size + 1), (piece_size + (P1.y) * (piece_size + 1) + i * (piece_size + 1)) - piece_size, piece_size, piece_size);
-                ctx.strokeRect((P1.x * (piece_size + 1) - (piece_size + 1)) + j * (piece_size + 1) + (piece_size + 1), (piece_size + (P1.y) * (piece_size + 1) + i * (piece_size + 1)) - piece_size, piece_size, piece_size);
+                ctx.fillRect(((P1.x - 5) * (piece_size + 1) - (piece_size + 1)) + j * (piece_size + 1) + (piece_size + 1), (piece_size + (P1.y - 5) * (piece_size + 1) + i * (piece_size + 1)) - piece_size, piece_size, piece_size);
+                ctx.strokeRect(((P1.x - 5) * (piece_size + 1) - (piece_size + 1)) + j * (piece_size + 1) + (piece_size + 1), (piece_size + (P1.y - 5) * (piece_size + 1) + i * (piece_size + 1)) - piece_size, piece_size, piece_size);
             }
         }
     }
@@ -90,8 +90,8 @@ const draw = () => {
             for (let j = 0; j < P1.held_piece.state[0].length; j++) {
                 if (P1.held_piece.state[i][j] > 0) {
                     colors(P1.held_piece.state[i][j]);
-                    ctx.fillRect(20 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
-                    ctx.strokeRect(20 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
+                    ctx.fillRect(330 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
+                    ctx.strokeRect(330 + piece_size * j, 200 + piece_size * i, piece_size, piece_size);
                 }
             }
         }
@@ -109,5 +109,55 @@ const draw = () => {
         }
     }
     ctx.font = "30px Arial";
-    ctx.fillText(" " + P1.x + " " + P1.y, 50, 50);
+    ctx.fillText(" " + (P1.x - 10) + " " + P1.y, 50, 50);
+};
+const game_restart = () => {
+    main_grid = new grid([
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+    ]);
+    pieces = [I_bag, J_bag, L_bag, O_bag, S_bag, T_bag, Z_bag];
+    game_bag = new bag(pieces);
+    P1 = new player(game_bag.take_piece());
+    input_grid = new grid(structuredClone(main_grid.array));
+    ghost_grid = new grid(structuredClone(main_grid.array));
+    drop_grid = new grid(structuredClone(main_grid.array));
+    old_time = Date.now();
+    curr_time = Date.now();
+    old_time_input = Date.now();
+    curr_time_input = Date.now();
+    drop_constraint = 1;
 };
